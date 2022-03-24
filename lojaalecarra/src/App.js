@@ -1,23 +1,33 @@
-import logo from './logo.svg';
-import './App.css';
+import { useState, useEffect, Fragment } from "react";
+
+import Header from "./components/Header/Header";
+import Card from "./components/Card/Card";
+
+import "./App.scss";
+
+import { getAllShoes } from "./services/shoes";
 
 function App() {
+  const [Shoes, setShoes] = useState([]);
+
+  useEffect(() => {
+    (async () => {
+      const shoes = await getAllShoes();
+      setShoes(shoes);
+    })();
+  }, []);
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <Header />
+      {!!Shoes && (
+        <Fragment>
+          <h3 className="App-search-title">Search results</h3>
+          {Shoes.map((shoe) => (
+            <Card data={shoe} key={shoe.id}></Card>
+          ))}
+        </Fragment>
+      )}
     </div>
   );
 }
